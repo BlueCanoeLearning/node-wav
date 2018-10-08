@@ -196,6 +196,11 @@ function decode(buffer) {
   while (pos < end) {
     let type = string(4);
     let size = u32();
+    // If the buffer came from a SoX pipe, the size will be the maximum possible.
+    // Be forgiving here and substitute the remaining buffer size instead.
+    if (size === 2147479552) {
+        size = end - pos;
+    }
     let next = pos + size;
     switch (type) {
     case 'fmt ':
